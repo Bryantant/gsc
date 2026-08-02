@@ -25,7 +25,7 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/gsc/css/gsc.css"
+app_include_css = "/assets/gsc/css/point_of_sale.css"
 # app_include_js = "/assets/gsc/js/gsc.js"
 
 # include js, css files in header of web template
@@ -40,10 +40,10 @@ app_license = "mit"
 # webform_include_css = {"doctype": "public/css/doctype.css"}
 
 # include js in page
-# page_js = {"page" : "public/js/file.js"}
+page_js = {"point-of-sale": "public/js/point_of_sale.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Laundry Order": "public/js/laundry_order.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -52,6 +52,13 @@ app_license = "mit"
 # ------------------
 # include app icons in desk
 # app_include_icons = "gsc/public/icons.svg"
+
+# Fixtures
+# --------
+
+fixtures = [
+	{"dt": "Kanban Board", "filters": [["reference_doctype", "=", "Laundry Order"]]},
+]
 
 # Home Pages
 # ----------
@@ -138,13 +145,11 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"on_submit": "gsc.overrides.sales_invoice.create_laundry_order",
+	},
+}
 
 # Scheduled Tasks
 # ---------------
@@ -183,9 +188,9 @@ app_license = "mit"
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "gsc.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.selling.page.point_of_sale.point_of_sale.get_past_order_list": "gsc.overrides.point_of_sale.get_past_order_list",
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,

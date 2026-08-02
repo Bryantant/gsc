@@ -1,0 +1,80 @@
+<style>
+	.print-format-preview {
+		margin-top: 12px;
+	}
+	.letter-head {
+		border-radius: 14px;
+		background: #2c4a6e;
+		padding: 20px 24px;
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.letterhead-container {
+		width: 100%;
+	}
+	.logo-cell {
+		width: 90px;
+		vertical-align: top;
+	}
+
+	.company-info-cell {
+		vertical-align: top;
+		text-align: right;
+	}
+
+	.letter-head .logo {
+		width: 90px;
+		display: block;
+	}
+
+	.letter-head .logo img {
+		border-radius: 15px;
+	}
+
+	.company-name {
+		color: #ffffff;
+		font-weight: bold;
+		line-height: 23px;
+		margin-bottom: 5px;
+	}
+
+	.company-address {
+		color: #cbd5e1;
+	}
+
+	.letterhead-container td {
+		padding: 0px !important;
+		position: relative;
+	}
+</style>
+
+<table class="letterhead-container">
+	<tbody>
+		<tr>
+			<td class="logo-cell">
+				{% set company_logo = frappe.db.get_value("Company", doc.company, "company_logo") %} {% if
+				company_logo %}
+				<div class="logo">
+					<img src="{{ frappe.utils.get_url(company_logo) }}" />
+				</div>
+				{% endif %}
+			</td>
+
+			<td class="company-info-cell">
+				<div class="company-name">{{ doc.company }}</div>
+				<div class="company-address">
+					{% if doc.company_address %} {% set company_address = frappe.db.get_value("Address",
+					doc.company_address, ["address_line1", "address_line2", "city", "state", "pincode",
+					"country"], as_dict=True) %} {% elif doc.billing_address %} {% set company_address =
+					frappe.db.get_value("Address", doc.billing_address, ["address_line1", "address_line2",
+					"city", "state", "pincode", "country"], as_dict=True) %} {% endif %} {% if company_address
+					%} {{ company_address.address_line1 or "" }}<br />
+					{% if company_address.address_line2 %} {{ company_address.address_line2 }}<br />
+					{% endif %} {{ company_address.city or "" }}, {{ company_address.state or "" }} {{
+					company_address.pincode or "" }}, {{ company_address.country or ""}}<br />
+					{% endif %}
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>

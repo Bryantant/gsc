@@ -1,0 +1,92 @@
+{% if letter_head and not no_letterhead %}
+<div class="gsc-letterhead letter-head">{{ letter_head }}</div>
+{% endif %}
+
+<div class="gsc-invoice">
+
+	<div class="gsc-topbar">
+		<div class="gsc-topbar-left">
+			<div class="gsc-doc-kicker">Invoice</div>
+			<div class="gsc-doc-no">{{ doc.name }}</div>
+			<div class="gsc-doc-date">{{ frappe.utils.formatdate(doc.posting_date, "dd MMMM yyyy") }}</div>
+		</div>
+		<div class="gsc-topbar-right">
+			{% set _status_class = doc.status | lower | replace(" ", "-") %}
+			<span class="gsc-badge gsc-badge-{{ _status_class }}">{{ doc.status }}</span>
+		</div>
+	</div>
+
+	<div class="gsc-panel gsc-customer-panel">
+		<div class="gsc-panel-label">Ditagihkan kepada</div>
+		<div class="gsc-customer-name">{{ doc.customer_name }}</div>
+		{% if doc.contact_mobile %}
+		<div class="gsc-customer-phone">{{ doc.contact_mobile }}</div>
+		{% endif %}
+		{% if doc.address_display %}
+		<div class="gsc-customer-address">{{ doc.address_display }}</div>
+		{% endif %}
+	</div>
+
+	<table class="gsc-items-table">
+		<thead>
+			<tr>
+				<th class="gsc-col-item">Item</th>
+				<th class="gsc-col-qty gsc-num">Qty</th>
+				<th class="gsc-col-rate gsc-num">Harga</th>
+				<th class="gsc-col-discount gsc-num">Diskon</th>
+				<th class="gsc-col-total gsc-num">Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in doc.items %}
+			<tr>
+				<td class="gsc-col-item">{{ item.item_name }}</td>
+				<td class="gsc-col-qty gsc-num">{{ item.qty }}{% if item.uom %} {{ item.uom }}{% endif %}</td>
+				<td class="gsc-col-rate gsc-num">{{ frappe.utils.fmt_money(item.rate, currency=doc.currency) }}</td>
+				<td class="gsc-col-discount gsc-num">
+					{%- if item.discount_percentage -%}
+						{{ item.discount_percentage }}%
+					{%- elif item.discount_amount -%}
+						{{ frappe.utils.fmt_money(item.discount_amount, currency=doc.currency) }}
+					{%- else -%}
+						-
+					{%- endif -%}
+				</td>
+				<td class="gsc-col-total gsc-num">{{ frappe.utils.fmt_money(item.amount, currency=doc.currency) }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<div class="gsc-footer-row">
+		<div class="gsc-pos-note">
+			{% if doc.pos_profile %}
+			<div class="gsc-panel-label">Diproses melalui</div>
+			<div class="gsc-pos-profile">{{ doc.pos_profile }}</div>
+			{% endif %}
+		</div>
+		<table class="gsc-totals-box">
+			<tbody>
+				<tr>
+					<td class="gsc-totals-label">Subtotal</td>
+					<td class="gsc-num">{{ frappe.utils.fmt_money(doc.net_total, currency=doc.currency) }}</td>
+				</tr>
+				{% if doc.discount_amount %}
+				<tr>
+					<td class="gsc-totals-label">Diskon</td>
+					<td class="gsc-num">- {{ frappe.utils.fmt_money(doc.discount_amount, currency=doc.currency) }}</td>
+				</tr>
+				{% endif %}
+				<tr class="gsc-grand-total-row">
+					<td class="gsc-totals-label">Grand Total</td>
+					<td class="gsc-num">{{ frappe.utils.fmt_money(doc.rounded_total or doc.grand_total, currency=doc.currency) }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="gsc-complaint-bar">
+		Komplain &amp; WhatsApp: <strong>0819 0301 0001</strong>
+	</div>
+
+</div>

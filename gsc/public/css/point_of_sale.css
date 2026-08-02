@@ -1,0 +1,35 @@
+/* Order-summary action buttons (WhatsApp Receipt, Return, Edit/Delete Order,
+   Open in Form View) render as plain .btn-default, which is nearly the same
+   gray as the row backgrounds above them (--control-bg) - hard to spot at a
+   glance. Recolor them light purple so they read as actionable.
+
+   .new-btn ("New Order"/"New Invoice") is excluded: it already has its own
+   distinct --btn-primary styling from core and shouldn't be touched.
+
+   --bg-purple / --text-on-purple are Frappe's own theme-aware pair (already
+   used for e.g. purple indicator pills), so this adapts to dark mode too. */
+
+.point-of-sale-app .summary-btns > .summary-btn:not(.new-btn) {
+	background-color: var(--bg-purple);
+	color: var(--text-on-purple);
+	border-color: transparent;
+}
+
+/* filter/opacity instead of a hardcoded shade so this still reads correctly
+   against --bg-purple's dark-mode value (--purple-700, not --purple-100). */
+.point-of-sale-app .summary-btns > .summary-btn:not(.new-btn):hover {
+	filter: brightness(1.08);
+}
+
+/* Fulfillment Status select (Recent Orders summary, gsc.pos.render_fulfillment_control
+   in point_of_sale.js) - same light-purple treatment as the summary buttons above,
+   for visual consistency. */
+.point-of-sale-app .gsc-fulfillment-select {
+	background-color: var(--bg-purple);
+	color: var(--text-on-purple);
+	border-color: transparent;
+}
+
+.point-of-sale-app .gsc-fulfillment-select:hover {
+	filter: brightness(1.08);
+}

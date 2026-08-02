@@ -1,0 +1,269 @@
+@page {
+	size: A5 portrait;
+	margin-top: 8mm;
+	margin-bottom: 8mm;
+	margin-left: 8mm;
+	margin-right: 8mm;
+}
+
+.gsc-invoice, .gsc-invoice * {
+	color: #1f2937 !important;
+	box-sizing: border-box;
+}
+
+.gsc-invoice {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	line-height: 1.45;
+}
+
+.gsc-letterhead {
+	margin-bottom: 16px;
+}
+
+/* ---------- Top bar ---------- */
+
+.print-format .gsc-topbar {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+	border-bottom: 3px solid #2c4a6e !important;
+	padding-bottom: 10px;
+	margin-bottom: 14px;
+}
+
+.gsc-topbar-left,
+.gsc-topbar-right {
+	display: table-cell;
+	vertical-align: bottom;
+}
+
+.gsc-topbar-right {
+	text-align: right;
+}
+
+.gsc-doc-kicker {
+	font-size: 11px;
+	font-weight: 700 !important;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: #2c4a6e !important;
+}
+
+.gsc-doc-no {
+	font-size: 22px;
+	font-weight: 700 !important;
+	margin-top: 2px;
+}
+
+.gsc-doc-date {
+	font-size: 11px;
+	color: #6b7280 !important;
+	margin-top: 2px;
+}
+
+/* ---------- Status badge ---------- */
+
+.gsc-badge {
+	display: inline-block;
+	padding: 5px 14px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 700 !important;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	border: 1px solid transparent;
+}
+
+.gsc-badge-paid {
+	background-color: #dcfce7 !important;
+	color: #15803d !important;
+	border-color: #86efac !important;
+}
+
+.gsc-badge-unpaid,
+.gsc-badge-submitted,
+.gsc-badge-unpaid-and-discounted {
+	background-color: #fef3c7 !important;
+	color: #b45309 !important;
+	border-color: #fcd34d !important;
+}
+
+.gsc-badge-partly-paid,
+.gsc-badge-partly-paid-and-discounted {
+	background-color: #dbeafe !important;
+	color: #1d4ed8 !important;
+	border-color: #93c5fd !important;
+}
+
+.gsc-badge-overdue,
+.gsc-badge-overdue-and-discounted,
+.gsc-badge-cancelled {
+	background-color: #fee2e2 !important;
+	color: #b91c1c !important;
+	border-color: #fca5a5 !important;
+}
+
+.gsc-badge-return,
+.gsc-badge-credit-note-issued {
+	background-color: #ede9fe !important;
+	color: #6d28d9 !important;
+	border-color: #c4b5fd !important;
+}
+
+.gsc-badge-draft,
+.gsc-badge-internal-transfer {
+	background-color: #f3f4f6 !important;
+	color: #4b5563 !important;
+	border-color: #e5e7eb !important;
+}
+
+/* ---------- Panels ---------- */
+
+.gsc-panel {
+	background-color: #f9fafb !important;
+	border: 1px solid #e5e7eb !important;
+	border-left: 3px solid #2c4a6e !important;
+	border-radius: 6px;
+	padding: 10px 14px;
+	margin-bottom: 14px;
+}
+
+.gsc-panel-label {
+	font-size: 10px;
+	font-weight: 700 !important;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: #6b7280 !important;
+	margin-bottom: 3px;
+}
+
+.gsc-customer-name {
+	font-size: 14px;
+	font-weight: 700 !important;
+}
+
+.gsc-customer-phone {
+	font-size: 11px;
+	color: #4b5563 !important;
+	margin-top: 2px;
+}
+
+.gsc-customer-address {
+	font-size: 11px;
+	color: #4b5563 !important;
+	margin-top: 2px;
+}
+
+/* ---------- Items table ---------- */
+
+.print-format .gsc-items-table {
+	width: 100% !important;
+	border-collapse: collapse !important;
+	margin-bottom: 14px;
+}
+
+.print-format .gsc-items-table th {
+	background-color: #2c4a6e !important;
+	color: #ffffff !important;
+	font-weight: 700 !important;
+	font-size: 10px !important;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	text-align: left;
+	padding: 8px 10px !important;
+	border: none !important;
+}
+
+.print-format .gsc-items-table td {
+	padding: 7px 10px !important;
+	border: none !important;
+	border-bottom: 1px solid #e5e7eb !important;
+	font-size: 11.5px;
+}
+
+.print-format .gsc-items-table tbody tr:last-child td {
+	border-bottom: 1px solid #2c4a6e !important;
+}
+
+.gsc-num {
+	text-align: right !important;
+}
+
+.gsc-col-item {
+	text-align: left !important;
+	width: 40%;
+}
+
+.gsc-col-qty { width: 14%; }
+.gsc-col-rate { width: 16%; }
+.gsc-col-discount { width: 14%; }
+.gsc-col-total { width: 16%; }
+
+/* ---------- Footer row: POS note + totals ---------- */
+
+.print-format .gsc-footer-row {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+	margin-top: 6px;
+}
+
+.gsc-pos-note {
+	display: table-cell;
+	width: 50%;
+	vertical-align: top;
+	padding-right: 10px;
+}
+
+.gsc-pos-profile {
+	font-size: 12px;
+	font-weight: 700 !important;
+}
+
+.print-format .gsc-totals-box {
+	display: table-cell;
+	width: 50%;
+	vertical-align: top;
+	border-collapse: collapse !important;
+}
+
+.print-format .gsc-totals-box td {
+	padding: 5px 0 !important;
+	border: none !important;
+	font-size: 12px;
+}
+
+.print-format .gsc-totals-box .gsc-totals-label {
+	color: #6b7280 !important;
+	text-align: left;
+	padding-right: 24px !important;
+	white-space: nowrap;
+}
+
+.print-format .gsc-totals-box .gsc-grand-total-row td {
+	border-top: 2px solid #2c4a6e !important;
+	padding-top: 8px !important;
+	font-size: 15px;
+	font-weight: 700 !important;
+	color: #2c4a6e !important;
+}
+
+.gsc-grand-total-row .gsc-totals-label {
+	color: #2c4a6e !important;
+}
+
+/* ---------- Complaint / WhatsApp bar ---------- */
+
+.gsc-complaint-bar {
+	margin-top: 20px;
+	padding-top: 10px;
+	border-top: 1px solid #e5e7eb;
+	text-align: center;
+	font-size: 10.5px;
+	color: #6b7280 !important;
+}
+
+.gsc-complaint-bar strong {
+	color: #2c4a6e !important;
+}

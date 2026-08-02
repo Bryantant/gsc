@@ -1,0 +1,30 @@
+[
+ {
+  "doctype": "Kanban Board",
+  "name": "Laundry Order Fulfillment",
+  "kanban_board_name": "Laundry Order Fulfillment",
+  "reference_doctype": "Laundry Order",
+  "field_name": "fulfillment_status",
+  "private": 0,
+  "show_labels": 1,
+  "filters": "[]",
+  "fields": "[\"customer_name\", \"is_pickup\", \"is_delivery\"]",
+  "columns": [
+   {
+    "column_name": "In Progress",
+    "status": "Active",
+    "indicator": "Orange"
+   },
+   {
+    "column_name": "Ready to Collect",
+    "status": "Active",
+    "indicator": "Blue"
+   },
+   {
+    "column_name": "Completed",
+    "status": "Active",
+    "indicator": "Green"
+   }
+  ]
+ }
+]
