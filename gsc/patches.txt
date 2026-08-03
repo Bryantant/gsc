@@ -8,3 +8,4 @@ gsc.patches.v1_0.backfill_laundry_orders
 gsc.patches.v1_0.update_gsc_letterhead
 gsc.patches.v1_0.create_gsc_pos_invoice_print_format
 gsc.patches.v1_1.backfill_laundry_order_total_items
+gsc.patches.v1_2.add_backlog_sales_invoice_field

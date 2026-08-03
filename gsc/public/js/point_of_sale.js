@@ -282,6 +282,72 @@ gsc.pos.bind_whatsapp_handler = function (summary) {
 };
 
 // ---------------------------------------------------------------------------
+// "Bayar Sisa" button - create a Payment Entry for a Partly Paid/Unpaid/
+// Overdue invoice directly from the Recent Orders summary, without detouring
+// through "Open in Form View" -> Sales Invoice form -> Create > Payment.
+// ---------------------------------------------------------------------------
+//
+// get_condition_btn_map() only puts "Open in Form View" in the branch for
+// {Partly Paid, Overdue, Unpaid} status, so injecting next to that label
+// (instead of "Email Receipt", like the WhatsApp button) naturally confines
+// this to invoices that actually have something outstanding to collect.
+//
+// Reuses core's own whitelisted mapper method - the exact one core's Sales
+// Invoice "Create > Payment" button calls (see get_method_for_payment() in
+// erpnext/public/js/controllers/transaction.js) - so behavior (party
+// account resolution, over-billing checks, etc.) matches the form exactly.
+// No new server code needed.
+
+gsc.pos.PAY_REMAINING_LABEL = "Bayar Sisa";
+
+gsc.pos.inject_pay_remaining_btn = function (map) {
+	return (map || []).map((entry) => {
+		const btns = (entry.visible_btns || []).slice();
+		const form_view_index = btns.indexOf("Open in Form View");
+		if (form_view_index !== -1 && btns.indexOf(gsc.pos.PAY_REMAINING_LABEL) === -1) {
+			btns.splice(form_view_index, 0, gsc.pos.PAY_REMAINING_LABEL);
+		}
+		return Object.assign({}, entry, { visible_btns: btns });
+	});
+};
+
+gsc.pos.handle_pay_remaining_click = function (summary) {
+	if (!summary || !summary.doc || !summary.doc.name) return;
+
+	frappe
+		.call({
+			method: "erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry",
+			args: { dt: summary.doc.doctype, dn: summary.doc.name },
+			freeze: true,
+			freeze_message: __("Menyiapkan Payment Entry..."),
+		})
+		.then((r) => {
+			if (!r || !r.message) return;
+			// Same as core's make_mapped_payment_entry(): sync the new unsaved
+			// Payment Entry into the client-side model cache, then navigate to
+			// it - this leaves the POS single-page app, same as "Open in Form
+			// View" already does today.
+			const doclist = frappe.model.sync(r.message);
+			frappe.set_route("Form", doclist[0].doctype, doclist[0].name);
+		})
+		.catch((err) => {
+			frappe.msgprint({
+				title: __("Gagal Membuat Payment Entry"),
+				indicator: "red",
+				message: __("Tidak dapat membuat Payment Entry untuk faktur ini."),
+			});
+			console.error("gsc: pay remaining failed", err);
+		});
+};
+
+gsc.pos.bind_pay_remaining_handler = function (summary) {
+	if (!summary || !summary.$summary_container) return;
+	summary.$summary_container
+		.off("click.gsc_pay", ".bayar-btn")
+		.on("click.gsc_pay", ".bayar-btn", () => gsc.pos.handle_pay_remaining_click(summary));
+};
+
+// ---------------------------------------------------------------------------
 // Hide "Print Receipt" / "Email Receipt" on the order-summary screen
 // ---------------------------------------------------------------------------
 //
@@ -419,13 +485,15 @@ gsc.pos.patch_past_order_summary = function () {
 			const with_whatsapp = gsc.pos.inject_whatsapp_btn(
 				original_get_condition_btn_map.apply(this, arguments)
 			);
-			return gsc.pos.filter_hidden_btns(with_whatsapp);
+			const with_payment = gsc.pos.inject_pay_remaining_btn(with_whatsapp);
+			return gsc.pos.filter_hidden_btns(with_payment);
 		};
 
 		const original_bind_events = proto.bind_events;
 		proto.bind_events = function () {
 			const result = original_bind_events.apply(this, arguments);
 			gsc.pos.bind_whatsapp_handler(this);
+			gsc.pos.bind_pay_remaining_handler(this);
 			return result;
 		};
 
@@ -450,6 +518,7 @@ gsc.pos.patch_past_order_summary = function () {
 	const summary = window.cur_pos && cur_pos.order_summary;
 	if (summary && !summary.__gsc_wa_bound) {
 		gsc.pos.bind_whatsapp_handler(summary);
+		gsc.pos.bind_pay_remaining_handler(summary);
 		summary.__gsc_wa_bound = true;
 
 		// If a summary is already displayed, its buttons were rendered by the

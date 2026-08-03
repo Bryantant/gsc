@@ -9,6 +9,7 @@
   "customer",
   "customer_name",
   "column_break_1",
+  "status",
   "fulfillment_status",
   "is_pickup",
   "pickup_proof_photo",
@@ -49,6 +50,15 @@
   {
    "fieldname": "column_break_1",
    "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "sales_invoice.status",
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Payment Status",
+   "read_only": 1
   },
   {
    "default": "In Progress",
