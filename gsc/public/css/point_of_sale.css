@@ -33,3 +33,79 @@
 .point-of-sale-app .gsc-fulfillment-select:hover {
 	filter: brightness(1.08);
 }
+
+/* "Tanggal Transaksi" and "Estimasi Waktu Selesai" rows in .customer-section
+   (gsc.pos.ensure_posting_date_control / ensure_estimasi_waktu_control - see
+   the make_customer_selector/update_customer_section wraps in
+   patch_item_cart_customer_selector). .customer-section is flex-direction:
+   column same as .cart-totals-section, so this lays out the same way.
+   Order on screen: customer field/details, then posting date, then estimasi
+   waktu - estimasi waktu is inserted right after posting date, which is in
+   turn inserted right after the customer field/details. The divider sits
+   only above posting date, separating the customer info above from GSC's own
+   two stacked controls below it; nothing divides the two from each other. */
+.point-of-sale-app .gsc-posting-date-container,
+.point-of-sale-app .gsc-estimasi-waktu-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--margin-sm);
+	padding: var(--padding-sm) var(--padding-lg) var(--padding-sm) 0;
+}
+
+.point-of-sale-app .gsc-posting-date-container {
+	border-top: 1px solid var(--border-color);
+	margin-top: var(--margin-sm);
+}
+
+.point-of-sale-app .gsc-posting-date-label,
+.point-of-sale-app .gsc-estimasi-waktu-label {
+	font-weight: 500;
+	color: var(--text-muted);
+	white-space: nowrap;
+}
+
+.point-of-sale-app .gsc-posting-date-field,
+.point-of-sale-app .gsc-estimasi-waktu-field {
+	flex: 1;
+	max-width: 60%;
+}
+
+/* % / Rp discount unit toggle - used in BOTH the cart's .add-discount-wrapper
+   and the item detail form (gsc.pos.discount_toggle_html). flex-shrink:0 keeps
+   it from being squeezed by the input beside it in the cart, where
+   point-of-sale.scss gives .add-discount-field width:100%. */
+.point-of-sale-app .gsc-discount-mode-toggle {
+	display: flex;
+	flex-shrink: 0;
+	margin-right: var(--margin-sm);
+	border: 1px solid var(--gray-400);
+	border-radius: var(--border-radius);
+	overflow: hidden;
+}
+
+.point-of-sale-app .gsc-discount-mode-btn {
+	border: none;
+	background-color: var(--control-bg);
+	color: var(--text-muted);
+	padding: 0 var(--padding-sm);
+	min-width: 32px;
+	line-height: 24px;
+	font-size: var(--text-sm);
+	cursor: pointer;
+}
+
+.point-of-sale-app .gsc-discount-mode-btn.active {
+	background-color: var(--bg-purple);
+	color: var(--text-on-purple);
+	font-weight: 600;
+}
+
+/* In the item form the toggle sits on its own line above the discount input,
+   rather than inline as it does in the cart. */
+.point-of-sale-app .form-container > .gsc-discount-mode-toggle {
+	margin-right: 0;
+	margin-bottom: var(--margin-xs);
+	align-self: flex-start;
+	width: fit-content;
+}

@@ -1,0 +1,332 @@
+/* Papan Kerja Laundry -- loaded automatically for this page only (Frappe reads
+   <page_name>.css from the page folder), so these rules never leak into other
+   Desk pages. Colors come from Frappe theme variables so dark mode follows. */
+
+.gsc-workboard {
+	display: flex;
+	gap: var(--margin-md, 12px);
+	align-items: flex-start;
+	padding-bottom: var(--padding-lg, 20px);
+
+	/* Shared by every rack slot and the unplaced holding area, so the whole
+	   "somewhere on a shelf" surface reads as one material. */
+	--gsc-slot-bg: oklch(0.96 0.012 245);
+	--gsc-slot-border: oklch(0.85 0.03 245);
+}
+
+.gsc-workboard .gsc-wb-col {
+	background: var(--fg-color);
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md, 6px);
+	padding: var(--padding-sm, 8px);
+	min-width: 0;
+}
+
+/* The two flanking lists stay narrow; the rack gets the remaining width
+   because it carries a 3-column grid. */
+.gsc-workboard .gsc-wb-col-progress,
+.gsc-workboard .gsc-wb-col-done {
+	flex: 0 0 250px;
+}
+
+.gsc-workboard .gsc-wb-col-rack {
+	flex: 1 1 auto;
+}
+
+.gsc-workboard .gsc-wb-col-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: var(--margin-sm, 8px);
+}
+
+.gsc-workboard .gsc-wb-col-title {
+	font-weight: 600;
+}
+
+.gsc-workboard .gsc-wb-count {
+	background: var(--control-bg);
+	border-radius: var(--border-radius-full, 999px);
+	padding: 0 8px;
+	font-size: var(--text-sm, 12px);
+	color: var(--text-muted);
+}
+
+/* Drop zones need a floor height so an empty one is still a usable target. */
+.gsc-workboard .gsc-wb-drop {
+	min-height: 60px;
+	border-radius: var(--border-radius-md, 6px);
+}
+
+.gsc-workboard .gsc-wb-list {
+	max-height: 70vh;
+	overflow-y: auto;
+}
+
+.gsc-workboard .gsc-wb-hint {
+	margin-top: var(--margin-xs, 4px);
+	font-size: var(--text-sm, 12px);
+	color: var(--text-muted);
+}
+
+/* ---- rack ---- */
+
+.gsc-workboard .gsc-wb-rack {
+	display: flex;
+	flex-direction: column;
+	gap: var(--margin-xs, 4px);
+}
+
+.gsc-workboard .gsc-wb-rack-row {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--margin-xs, 4px);
+}
+
+/* Solid border = a real, fixed rack position. */
+.gsc-workboard .gsc-wb-slot {
+	border: 1px solid var(--gsc-slot-border);
+	border-radius: var(--border-radius-md, 6px);
+	padding: var(--padding-xs, 4px);
+	background: var(--gsc-slot-bg);
+}
+
+.gsc-workboard .gsc-wb-slot-label {
+	font-size: var(--text-sm, 12px);
+	color: var(--text-muted);
+	font-weight: 600;
+	margin-bottom: 2px;
+}
+
+.gsc-workboard .gsc-wb-slot-items {
+	min-height: 54px;
+}
+
+.gsc-workboard .gsc-wb-unplaced-wrap {
+	margin-bottom: var(--margin-sm, 8px);
+}
+
+.gsc-workboard .gsc-wb-unplaced-label {
+	font-size: var(--text-sm, 12px);
+	color: var(--text-muted);
+	margin-bottom: 2px;
+}
+
+/* Dashed border, deliberately unlike the solid rack slots: this is a holding
+   area for items marked Ready without a slot (e.g. set from the Laundry Order
+   form), not a real rack position. */
+.gsc-workboard .gsc-wb-unplaced {
+	border: 1px dashed var(--gsc-slot-border);
+	background: var(--gsc-slot-bg);
+	border-radius: var(--border-radius-md, 6px);
+	padding: var(--padding-xs, 4px);
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--margin-xs, 4px);
+}
+
+/* ---- wall rack (3 open shelves) ---- */
+
+.gsc-workboard .gsc-wb-wall {
+	margin-top: var(--margin-md, 12px);
+}
+
+.gsc-workboard .gsc-wb-wall-title {
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	font-size: var(--text-sm, 12px);
+	margin-bottom: var(--margin-sm, 8px);
+}
+
+.gsc-workboard .gsc-wb-shelf {
+	margin-bottom: var(--margin-md, 12px);
+}
+
+.gsc-workboard .gsc-wb-shelf-label {
+	color: var(--text-muted);
+	font-size: var(--text-sm, 12px);
+	margin-bottom: var(--margin-xs, 4px);
+}
+
+/* A shelf physically holds ~4 pairs comfortably. Not a hard cap (there's no
+   count check anywhere, staff can still drop a 5th) -- but 4 fixed columns
+   means the row visually reads as "full" right at that point, each item
+   getting a wider tile instead of shrinking to fit more. A 5th item simply
+   wraps to a new row using the same 4 columns. */
+.gsc-workboard .gsc-wb-shelf-items {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	align-items: end;
+	gap: var(--margin-sm, 8px);
+	border: 1px solid var(--gsc-slot-border);
+	background: var(--gsc-slot-bg);
+	border-radius: var(--border-radius-md, 6px);
+	padding: var(--padding-sm, 8px);
+	min-height: 96px;
+}
+
+/* The shelf board itself. */
+.gsc-workboard .gsc-wb-shelf-board {
+	height: 4px;
+	border-radius: 2px;
+	background: var(--gray-600, #555);
+	margin-top: var(--margin-xs, 4px);
+}
+
+/* On a shelf a card becomes a tile: photo on top, label underneath, the way
+   you'd actually see the shoe sitting there. Width comes from its grid cell
+   (one of the 4 columns above) instead of a fixed pixel value, so the tile
+   widens to fill the shelf as it fills up to the usual 4 pairs. */
+.gsc-workboard .gsc-wb-shelf-items .gsc-wb-card {
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	width: 100%;
+	margin-bottom: 0;
+}
+
+.gsc-workboard .gsc-wb-shelf-items .gsc-wb-thumb {
+	width: 100%;
+	height: 72px;
+	flex: 0 0 72px;
+}
+
+.gsc-workboard .gsc-wb-shelf-items .gsc-wb-card-body {
+	width: 100%;
+}
+
+.gsc-workboard .gsc-wb-shelf-items .gsc-wb-card-meta {
+	justify-content: center;
+}
+
+/* ---- cards ---- */
+
+.gsc-workboard .gsc-wb-card {
+	display: flex;
+	gap: var(--margin-xs, 4px);
+	align-items: flex-start;
+	background: var(--fg-color);
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md, 6px);
+	padding: var(--padding-xs, 4px);
+	margin-bottom: var(--margin-xs, 4px);
+	cursor: grab;
+}
+
+.gsc-workboard .gsc-wb-card:hover {
+	border-color: var(--gray-400);
+}
+
+/* Shift+click multi-select. Shares the primary color so it reads as "chosen"
+   consistently with the rest of Desk, not a one-off custom color. */
+.gsc-workboard .gsc-wb-card-selected {
+	border-color: var(--primary, #2490ef);
+	border-width: 2px;
+	padding: calc(var(--padding-xs, 4px) - 1px);
+	background: var(--control-bg);
+}
+
+.gsc-workboard .gsc-wb-card-ghost {
+	opacity: 0.4;
+}
+
+.gsc-workboard .gsc-wb-thumb {
+	width: 40px;
+	height: 40px;
+	flex: 0 0 40px;
+	object-fit: cover;
+	border-radius: var(--border-radius, 4px);
+	border: 1px solid var(--border-color);
+}
+
+.gsc-workboard .gsc-wb-thumb-empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-size: 8px;
+	line-height: 1.1;
+	color: var(--text-muted);
+	background: var(--control-bg);
+}
+
+.gsc-workboard .gsc-wb-card-body {
+	min-width: 0;
+	flex: 1 1 auto;
+}
+
+.gsc-workboard .gsc-wb-card-title {
+	font-weight: 600;
+	font-size: var(--text-sm, 12px);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.gsc-workboard .gsc-wb-card-sub {
+	font-size: var(--text-sm, 12px);
+	color: var(--text-muted);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.gsc-workboard .gsc-wb-card-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	align-items: center;
+	margin-top: 2px;
+	font-size: 10px;
+	color: var(--text-muted);
+}
+
+.gsc-workboard .gsc-wb-date {
+	background: var(--control-bg);
+	border-radius: var(--border-radius, 4px);
+	padding: 0 4px;
+}
+
+/* Past the promised date -- the one thing on a card that must catch the eye. */
+.gsc-workboard .gsc-wb-date.is-overdue {
+	background: var(--bg-red, #fee);
+	color: var(--text-on-red, #c00);
+	font-weight: 600;
+}
+
+/* Only ever rendered on cards in the Ready zone -- see card_html(). */
+.gsc-workboard .gsc-wb-wa-btn {
+	display: block;
+	width: 100%;
+	margin-top: var(--margin-xs, 4px);
+	padding: 2px 8px;
+	font-size: var(--text-sm, 12px);
+	font-weight: 600;
+	line-height: 1.4;
+	color: var(--text-on-green, #fff);
+	background: var(--bg-green, #25d366);
+	border: none;
+	border-radius: var(--border-radius, 4px);
+	cursor: pointer;
+}
+
+.gsc-workboard .gsc-wb-wa-btn:hover {
+	filter: brightness(1.08);
+}
+
+/* ---- photo dialog ---- */
+
+.gsc-wb-gallery {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--margin-sm, 8px);
+}
+
+.gsc-wb-gallery-img {
+	max-width: 220px;
+	max-height: 220px;
+	border-radius: var(--border-radius-md, 6px);
+	border: 1px solid var(--border-color);
+}

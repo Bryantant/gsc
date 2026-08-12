@@ -2,54 +2,109 @@
  "actions": [],
  "creation": "2026-07-31 00:00:00",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "item",
+  "item_status",
   "item_name",
+  "product_name",
   "brand",
   "color_material",
+  "size_type",
   "size",
-  "attach_image_wndt"
+  "rack_location",
+  "notes",
+  "photo_count",
+  "manage_photos",
+  "view_in_gallery"
  ],
  "fields": [
   {
    "fieldname": "item",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Service Item",
+   "label": "Jenis Layanan",
    "options": "Item",
+   "read_only": 1,
    "reqd": 1
+  },
+  {
+   "default": "In Progress",
+   "fieldname": "item_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status Barang",
+   "options": "In Progress\nReady\nCompleted"
   },
   {
    "fetch_from": "item.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item Name",
+   "in_list_view": 0,
+   "label": "Nama Layanan",
    "read_only": 1
+  },
+  {
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Nama Sepatu"
   },
   {
    "fieldname": "brand",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Brand"
+   "label": "Merek"
   },
   {
    "fieldname": "color_material",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Color"
+   "label": "Warna"
+  },
+  {
+   "fieldname": "size_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Tipe Ukuran",
+   "options": "\nEU\nUS\nUK\nCM"
   },
   {
    "fieldname": "size",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Size"
+   "label": "Ukuran"
   },
   {
-   "fieldname": "attach_image_wndt",
-   "fieldtype": "Attach Image",
-   "label": "Image"
+   "fieldname": "rack_location",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Lokasi Rak"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Catatan"
+  },
+  {
+   "default": "0",
+   "fieldname": "photo_count",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Jumlah Foto",
+   "read_only": 1
+  },
+  {
+   "fieldname": "manage_photos",
+   "fieldtype": "Button",
+   "label": "Kelola Foto (Maks. 8)"
+  },
+  {
+   "fieldname": "view_in_gallery",
+   "fieldtype": "Button",
+   "in_list_view": 1,
+   "label": "Lihat di Galeri"
   }
  ],
  "index_web_pages_for_search": 1,

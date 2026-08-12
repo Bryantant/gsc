@@ -1,10 +1,10 @@
 # Copyright (c) 2026, Hicom System and contributors
 # For license information, please see license.txt
 
-"""Auto-creates a Laundry Order when a POS sale is submitted.
+"""Sales Invoice overrides: POS shift bypass, and Laundry Order auto-creation.
 
-The business takes full payment at drop-off (submitted immediately from the
-POS screen), but service/handover happens 3-4 days later. Standard Delivery
+The business takes payment at drop-off (submitted immediately from the POS
+screen), but service/handover happens 3-4 days later. Standard Delivery
 Notes don't fit -- they document company stock leaving the warehouse, not a
 customer's own item being returned after service. Laundry Order tracks that
 fulfillment instead, decoupled from how the invoice groups items by qty: one
@@ -24,20 +24,46 @@ POS-screen invoices, which our custom "Fulfillment Pending" filter
 A second, independent trigger -- `custom_is_backlog_entry` (see
 gsc/patches/v1_2/add_backlog_sales_invoice_field.py) -- covers the "New
 Migration Order" flow, used to enter transactions that were already
-in-progress at system cutover with a real historical posting_date.
-`is_created_using_pos` can't be reused for this: setting it forces
-Sales Invoice.validate() through validate_created_using_pos(), which requires
-a currently-OPEN POS Opening Entry for the chosen POS Profile (throws "POS
-Opening Entry Missing" otherwise) and validate_full_payment(), which blocks
-submission on any partial payment unless the POS Profile allows it -- both
-wrong for a migration entry that must submit any time, independent of today's
-live cash-drawer session, and must support an outstanding balance.
+in-progress at system cutover with a real historical posting_date. It stays a
+dedicated flag purely so migration entries remain identifiable as such and
+stay off the POS screen's "Recent Orders" list; the validation reasons that
+originally forced them apart are gone (see GSCSalesInvoice below and
+POS Profile.allow_partial_payment, set by
+gsc/patches/v1_3/add_credit_mode_of_payment.py).
 """
 
 import frappe
 from frappe.utils import cint
 
+from erpnext.accounts.doctype.sales_invoice.sales_invoice import SalesInvoice
+
 from gsc.utils import get_service_item_groups
+
+
+class GSCSalesInvoice(SalesInvoice):
+	"""Wired via `override_doctype_class` in hooks.py.
+
+	GSC's counter does not reconcile a cash drawer per cashier shift, so the
+	POS screen never creates a POS Opening Entry (see the check_opening_entry
+	patch in gsc/public/js/point_of_sale.js). Core's own validation is the
+	other half of that requirement and has to come out too, otherwise every
+	POS sale throws "POS Opening Entry Missing".
+	"""
+
+	def validate_pos_opening_entry(self):
+		"""No-op: GSC runs its POS without cashier shifts.
+
+		Core's version (erpnext .../sales_invoice.py::validate_pos_opening_entry)
+		throws unless an Open POS Opening Entry exists for this POS Profile
+		*whose period_start_date is today*. That last clause is also what makes
+		back-dating impossible, so removing it is what lets the POS screen's
+		"Tanggal Transaksi" control post to a historical date.
+
+		Only reached from validate_created_using_pos(); that caller's two other
+		checks (pos_profile is set, POS Settings.invoice_type isn't "POS
+		Invoice") still run, and both are still wanted.
+		"""
+		pass
 
 
 def create_laundry_order(doc, method=None):

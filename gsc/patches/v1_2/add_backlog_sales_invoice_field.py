@@ -5,12 +5,16 @@
 
 Backs the "New Migration Order" Workspace shortcut, used to move
 already-in-progress transactions (paid or not, item not yet collected) into
-the system at cutover, with a real historical posting_date instead of the
-live POS screen's fixed "Today". See
-gsc/overrides/sales_invoice.py::create_laundry_order for why this is a
-dedicated flag rather than reusing `is_created_using_pos` -- that flag drags
-in POS Opening Entry / full-payment validation that would either block
-submission entirely or corrupt today's live cash-drawer session.
+the system at cutover, with a real historical posting_date.
+
+NOTE: this flag originally existed because `is_created_using_pos` dragged in
+POS Opening Entry and full-payment validation. That is no longer true -- see
+gsc/overrides/sales_invoice.py::GSCSalesInvoice and POS Profile
+.allow_partial_payment (gsc/patches/v1_3/add_credit_mode_of_payment.py) -- and
+the POS screen itself now supports both back-dating and outstanding balances.
+The flag is kept because it still usefully marks cutover data as such and
+keeps migration entries out of the POS "Recent Orders" list, which filters on
+is_created_using_pos.
 
 This app no longer uses fixtures for custom fields (see
 bp/patches/v1_0/add_customer_location_fields.py for the precedent) --

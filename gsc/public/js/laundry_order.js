@@ -7,6 +7,23 @@ const UNPAYABLE_STATUSES = [
 	"Internal Transfer",
 ];
 
+// Same map used by public/js/laundry_order_list.js -- kept in sync manually
+// since list view and form view are separate page loads (no shared module).
+const PAYMENT_STATUS_COLORS = {
+	Draft: "red",
+	Unpaid: "orange",
+	Paid: "green",
+	Return: "gray",
+	"Credit Note Issued": "gray",
+	"Unpaid and Discounted": "orange",
+	"Partly Paid and Discounted": "yellow",
+	"Overdue and Discounted": "red",
+	Overdue: "red",
+	"Partly Paid": "yellow",
+	"Internal Transfer": "darkgrey",
+	Cancelled: "red",
+};
+
 frappe.ui.form.on("Laundry Order", {
 	setup(frm) {
 		frm.set_query("item", "laundry_items", () => ({
@@ -15,6 +32,13 @@ frappe.ui.form.on("Laundry Order", {
 	},
 
 	refresh(frm) {
+		if (frm.doc.status) {
+			frm.dashboard.add_indicator(
+				__("Status Pembayaran: {0}", [__(frm.doc.status)]),
+				PAYMENT_STATUS_COLORS[frm.doc.status] || "gray"
+			);
+		}
+
 		if (frm.doc.sales_invoice && !UNPAYABLE_STATUSES.includes(frm.doc.status)) {
 			frm.add_custom_button(__("Payment"), () => {
 				// Same call the Sales Invoice's own "Create > Payment" button makes

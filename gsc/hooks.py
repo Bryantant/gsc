@@ -44,7 +44,7 @@ page_js = {"point-of-sale": "public/js/point_of_sale.js"}
 
 # include js in doctype views
 doctype_js = {"Laundry Order": "public/js/laundry_order.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {"Laundry Order": "public/js/laundry_order_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -148,6 +148,14 @@ fixtures = [
 doc_events = {
 	"Sales Invoice": {
 		"on_submit": "gsc.overrides.sales_invoice.create_laundry_order",
+		# Laundry Order.status is a fetch_from snapshot, not a live view -- it
+		# has to be re-pushed whenever the invoice's status moves. Matters only
+		# since credit ("Hutang") sales exist. See gsc/overrides/payment_entry.py.
+		"on_update_after_submit": "gsc.overrides.payment_entry.sync_from_sales_invoice",
+	},
+	"Payment Entry": {
+		"on_submit": "gsc.overrides.payment_entry.sync_from_payment_entry",
+		"on_cancel": "gsc.overrides.payment_entry.sync_from_payment_entry",
 	},
 }
 
@@ -184,6 +192,16 @@ doc_events = {
 # extend_doctype_class = {
 # 	"Task": "gsc.custom.task.CustomTaskMixin"
 # }
+
+# Override DocType Class
+# ------------------------------
+#
+# Removes core's POS Opening Entry requirement from POS-screen Sales Invoices:
+# GSC runs no cashier shifts, and that same validation is what blocks
+# back-dating. See gsc/overrides/sales_invoice.py::GSCSalesInvoice.
+override_doctype_class = {
+	"Sales Invoice": "gsc.overrides.sales_invoice.GSCSalesInvoice",
+}
 
 # Overriding Methods
 # ------------------------------

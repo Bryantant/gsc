@@ -8,16 +8,26 @@
   "sales_invoice",
   "customer",
   "customer_name",
+  "additional_photo",
   "column_break_1",
   "status",
   "fulfillment_status",
+  "target_ready_date",
+  "received_at",
+  "ready_at",
+  "completed_at",
+  "section_break_bwav",
   "is_pickup",
   "pickup_proof_photo",
-  "is_delivery",
-  "delivery_proof_photo",
+  "section_break_notes",
+  "customer_note",
+  "column_break_notes",
+  "internal_note",
   "section_break_items",
   "laundry_items",
-  "total_items"
+  "total_items",
+  "section_break_gallery",
+  "item_gallery_html"
  ],
  "fields": [
   {
@@ -35,7 +45,7 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_standard_filter": 1,
-   "label": "Customer",
+   "label": "Pelanggan",
    "options": "Customer",
    "read_only": 1
   },
@@ -44,7 +54,7 @@
    "fieldname": "customer_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Customer Name",
+   "label": "Nama Pelanggan",
    "read_only": 1
   },
   {
@@ -57,7 +67,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Payment Status",
+   "label": "Status Pembayaran",
    "read_only": 1
   },
   {
@@ -66,57 +76,107 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Fulfillment Status",
-   "options": "In Progress\nReady to Collect\nCompleted"
+   "label": "Status Pengerjaan",
+   "options": "In Progress\nReady to Collect\nCompleted",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_invoice.custom_estimasi_waktu_pengerjaan",
+   "fieldname": "target_ready_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Target Tanggal Siap",
+   "read_only": 1
+  },
+  {
+   "fieldname": "received_at",
+   "fieldtype": "Datetime",
+   "label": "Diterima Pada",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ready_at",
+   "fieldtype": "Datetime",
+   "label": "Waktu Barang Siap",
+   "read_only": 1
+  },
+  {
+   "fieldname": "completed_at",
+   "fieldtype": "Datetime",
+   "label": "Waktu Order Selesai",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_notes",
+   "fieldtype": "Section Break",
+   "label": "Catatan"
+  },
+  {
+   "fieldname": "customer_note",
+   "fieldtype": "Small Text",
+   "label": "Catatan Pelanggan"
+  },
+  {
+   "fieldname": "column_break_notes",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "internal_note",
+   "fieldtype": "Small Text",
+   "label": "Catatan Internal"
   },
   {
    "fieldname": "section_break_items",
    "fieldtype": "Section Break",
-   "label": "Items"
+   "label": "Daftar Barang"
   },
   {
    "fieldname": "laundry_items",
    "fieldtype": "Table",
-   "label": "Items",
+   "label": "Barang",
    "options": "Laundry Order Item"
   },
   {
    "fieldname": "total_items",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Total Items",
+   "label": "Total Barang",
    "read_only": 1
   },
   {
    "default": "0",
    "fieldname": "is_pickup",
    "fieldtype": "Check",
-   "label": "Pickup"
+   "label": "Pickup/Delivery"
   },
   {
    "depends_on": "eval:doc.is_pickup",
    "fieldname": "pickup_proof_photo",
    "fieldtype": "Attach Image",
-   "label": "Pickup Proof Photo",
-   "mandatory_depends_on": "eval:doc.is_pickup"
+   "label": "Foto Bukti Pickup/Delivery"
   },
   {
-   "default": "0",
-   "fieldname": "is_delivery",
-   "fieldtype": "Check",
-   "label": "Delivery"
-  },
-  {
-   "depends_on": "eval:doc.is_delivery",
-   "fieldname": "delivery_proof_photo",
+   "fieldname": "additional_photo",
    "fieldtype": "Attach Image",
-   "label": "Delivery Proof Photo",
-   "mandatory_depends_on": "eval:doc.is_delivery"
+   "label": "Foto Tambahan"
+  },
+  {
+   "fieldname": "section_break_gallery",
+   "fieldtype": "Section Break",
+   "label": "Galeri Foto Barang"
+  },
+  {
+   "fieldname": "item_gallery_html",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "section_break_bwav",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-02 22:12:29.671076",
+ "modified": "2026-08-12 01:18:59.587768",
  "modified_by": "Administrator",
  "module": "GSC",
  "name": "Laundry Order",
