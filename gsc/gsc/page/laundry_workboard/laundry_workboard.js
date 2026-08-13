@@ -110,21 +110,23 @@ gsc.workboard.Workboard = class Workboard {
 						<span class="gsc-wb-col-title">${__("Siap / Di Rak")}</span>
 						<span class="gsc-wb-count" data-count="rack">0</span>
 					</div>
-					<div class="gsc-wb-unplaced-wrap">
-						<div class="gsc-wb-unplaced-label">${__("Belum ditempatkan")}</div>
-						<div class="gsc-wb-drop gsc-wb-unplaced" data-zone="rack" data-slot=""></div>
-					</div>
-					<div class="gsc-wb-rack"></div>
-					<div class="gsc-wb-wall">
-						<div class="gsc-wb-wall-title">${__("Rak Dinding (3 Tingkat)")}</div>
-						${WALL_TIERS.map(
-							(tier) => `
-							<div class="gsc-wb-shelf">
-								<div class="gsc-wb-shelf-label">${tier.label}</div>
-								<div class="gsc-wb-drop gsc-wb-shelf-items" data-zone="rack" data-slot="${tier.code}"></div>
-								<div class="gsc-wb-shelf-board"></div>
-							</div>`
-						).join("")}
+					<div class="gsc-wb-rack-scroll">
+						<div class="gsc-wb-unplaced-wrap">
+							<div class="gsc-wb-unplaced-label">${__("Belum ditempatkan")}</div>
+							<div class="gsc-wb-drop gsc-wb-unplaced" data-zone="rack" data-slot=""></div>
+						</div>
+						<div class="gsc-wb-rack"></div>
+						<div class="gsc-wb-wall">
+							<div class="gsc-wb-wall-title">${__("Rak Dinding (3 Tingkat)")}</div>
+							${WALL_TIERS.map(
+								(tier) => `
+								<div class="gsc-wb-shelf">
+									<div class="gsc-wb-shelf-label">${tier.label}</div>
+									<div class="gsc-wb-drop gsc-wb-shelf-items" data-zone="rack" data-slot="${tier.code}"></div>
+									<div class="gsc-wb-shelf-board"></div>
+								</div>`
+							).join("")}
+						</div>
 					</div>
 				</section>
 
@@ -276,22 +278,14 @@ gsc.workboard.Workboard = class Workboard {
 				item.item_name ||
 				item.item;
 
-			// Dedup: on most records the Customer's id IS the phone number, so
-			// name and mobile_no can be the same string.
-			const subtitle = [item.customer_name, item.mobile_no]
-				.filter(Boolean)
-				.filter((value, i, all) => all.indexOf(value) === i)
-				.join(" · ");
-
 			return {
 				key: item.name,
 				order: item.parent,
 				zone: this.zone_for_status(item.item_status),
 				slot: item.rack_location || "",
 				title: title,
-				subtitle: subtitle,
-				meta: [item.product_name, item.item_name].filter(Boolean).join(" · "),
-				photo_count: item.photo_count || 0,
+				customer_name: item.customer_name || "",
+				mobile_no: item.mobile_no || "",
 				thumbnail: item.thumbnail,
 				target_ready_date: item.target_ready_date,
 				wa_phone: item.wa_phone,
@@ -338,16 +332,15 @@ gsc.workboard.Workboard = class Workboard {
 		return `
 			<div class="gsc-wb-card${selected_cls}" data-key="${esc(card.key)}" data-order="${esc(card.order || "")}"
 				title="${esc(__("Klik untuk buka order · Shift+klik untuk pilih beberapa"))}">
-				${thumb}
+				<div class="gsc-wb-thumb-col">
+					${thumb}
+					${wa_button}
+				</div>
 				<div class="gsc-wb-card-body">
 					<div class="gsc-wb-card-title">${esc(card.title || "")}</div>
-					<div class="gsc-wb-card-sub">${esc(card.subtitle || "")}</div>
-					<div class="gsc-wb-card-meta">
-						${card.meta ? `<span>${esc(card.meta)}</span>` : ""}
-						${card.photo_count ? `<span class="gsc-wb-photos">${card.photo_count} 📷</span>` : ""}
-						${date_badge}
-					</div>
-					${wa_button}
+					<div class="gsc-wb-card-sub">${esc(card.customer_name)}</div>
+					<div class="gsc-wb-card-sub">${esc(card.mobile_no)}</div>
+					<div class="gsc-wb-card-meta">${date_badge}</div>
 				</div>
 			</div>
 		`;

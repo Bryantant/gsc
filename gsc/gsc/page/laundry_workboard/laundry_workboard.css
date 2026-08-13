@@ -26,7 +26,7 @@
    because it carries a 3-column grid. */
 .gsc-workboard .gsc-wb-col-progress,
 .gsc-workboard .gsc-wb-col-done {
-	flex: 0 0 250px;
+	flex: 0 0 190px;
 }
 
 .gsc-workboard .gsc-wb-col-rack {
@@ -63,6 +63,15 @@
 	overflow-y: auto;
 }
 
+/* Wraps unplaced + rack + wall shelf together so the whole rack column scrolls
+   as one unit, the same way .gsc-wb-list does for the Dikerjakan/Selesai
+   columns -- without this the rack grows as tall as its 5 rows + wall shelf
+   need and drags the whole page down with it. */
+.gsc-workboard .gsc-wb-rack-scroll {
+	max-height: 70vh;
+	overflow-y: auto;
+}
+
 .gsc-workboard .gsc-wb-hint {
 	margin-top: var(--margin-xs, 4px);
 	font-size: var(--text-sm, 12px);
@@ -77,6 +86,9 @@
 	gap: var(--margin-xs, 4px);
 }
 
+/* Stretchy again (1fr), matching the "Belum ditempatkan" grid below so the
+   rack spans the exact same width -- the gap/padding on .gsc-wb-slot and
+   .gsc-wb-rack-row keep slots from ever touching the column edge. */
 .gsc-workboard .gsc-wb-rack-row {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
@@ -99,6 +111,9 @@
 }
 
 .gsc-workboard .gsc-wb-slot-items {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: var(--margin-xs, 4px);
 	min-height: 54px;
 }
 
@@ -114,14 +129,20 @@
 
 /* Dashed border, deliberately unlike the solid rack slots: this is a holding
    area for items marked Ready without a slot (e.g. set from the Laundry Order
-   form), not a real rack position. */
+   form), not a real rack position.
+
+   Grid, not flex-wrap: flex-wrap let each card size itself to its own text
+   (title/subtitle length), so cards in the same row came out at different
+   widths. A fixed column count gives every card the same width per row
+   regardless of content length -- 6 columns since the compact thumb+button
+   layout comfortably fits that many per row. */
 .gsc-workboard .gsc-wb-unplaced {
 	border: 1px dashed var(--gsc-slot-border);
 	background: var(--gsc-slot-bg);
 	border-radius: var(--border-radius-md, 6px);
 	padding: var(--padding-xs, 4px);
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
 	gap: var(--margin-xs, 4px);
 }
 
@@ -150,16 +171,13 @@
 	margin-bottom: var(--margin-xs, 4px);
 }
 
-/* A shelf physically holds ~4 pairs comfortably. Not a hard cap (there's no
-   count check anywhere, staff can still drop a 5th) -- but 4 fixed columns
-   means the row visually reads as "full" right at that point, each item
-   getting a wider tile instead of shrinking to fit more. A 5th item simply
-   wraps to a new row using the same 4 columns. */
+/* Same treatment as .gsc-wb-unplaced -- fixed column count, ordinary
+   (non-tile) cards -- just capped at 5 per row instead of 6 since a shelf
+   is visually narrower ground than the open holding area. */
 .gsc-workboard .gsc-wb-shelf-items {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	align-items: end;
-	gap: var(--margin-sm, 8px);
+	grid-template-columns: repeat(5, 1fr);
+	gap: var(--margin-xs, 4px);
 	border: 1px solid var(--gsc-slot-border);
 	background: var(--gsc-slot-bg);
 	border-radius: var(--border-radius-md, 6px);
@@ -175,32 +193,6 @@
 	margin-top: var(--margin-xs, 4px);
 }
 
-/* On a shelf a card becomes a tile: photo on top, label underneath, the way
-   you'd actually see the shoe sitting there. Width comes from its grid cell
-   (one of the 4 columns above) instead of a fixed pixel value, so the tile
-   widens to fill the shelf as it fills up to the usual 4 pairs. */
-.gsc-workboard .gsc-wb-shelf-items .gsc-wb-card {
-	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	width: 100%;
-	margin-bottom: 0;
-}
-
-.gsc-workboard .gsc-wb-shelf-items .gsc-wb-thumb {
-	width: 100%;
-	height: 72px;
-	flex: 0 0 72px;
-}
-
-.gsc-workboard .gsc-wb-shelf-items .gsc-wb-card-body {
-	width: 100%;
-}
-
-.gsc-workboard .gsc-wb-shelf-items .gsc-wb-card-meta {
-	justify-content: center;
-}
-
 /* ---- cards ---- */
 
 .gsc-workboard .gsc-wb-card {
@@ -213,6 +205,10 @@
 	padding: var(--padding-xs, 4px);
 	margin-bottom: var(--margin-xs, 4px);
 	cursor: grab;
+	/* Grid/flex items default to a min-width based on their content, which
+	   blocks the title/subtitle ellipsis below from ever kicking in inside a
+	   fixed-width track. This lets the card actually shrink to fit. */
+	min-width: 0;
 }
 
 .gsc-workboard .gsc-wb-card:hover {
@@ -232,10 +228,19 @@
 	opacity: 0.4;
 }
 
+/* Image + WA button stacked together, so the button sits directly under the
+   thumbnail instead of at the bottom of the text column. */
+.gsc-workboard .gsc-wb-thumb-col {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--margin-xs, 4px);
+	flex: 0 0 40px;
+}
+
 .gsc-workboard .gsc-wb-thumb {
 	width: 40px;
 	height: 40px;
-	flex: 0 0 40px;
 	object-fit: cover;
 	border-radius: var(--border-radius, 4px);
 	border: 1px solid var(--border-color);
@@ -273,12 +278,16 @@
 	white-space: nowrap;
 }
 
+/* Always rendered in card_html() even when a card has no target_ready_date --
+   min-height reserves the date badge's own height so every card ends up the
+   same height in a row, whether or not that particular item has a date. */
 .gsc-workboard .gsc-wb-card-meta {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 4px;
 	align-items: center;
 	margin-top: 2px;
+	min-height: 14px;
 	font-size: 10px;
 	color: var(--text-muted);
 }
@@ -300,8 +309,7 @@
 .gsc-workboard .gsc-wb-wa-btn {
 	display: block;
 	width: 100%;
-	margin-top: var(--margin-xs, 4px);
-	padding: 2px 8px;
+	padding: 2px 4px;
 	font-size: var(--text-sm, 12px);
 	font-weight: 600;
 	line-height: 1.4;
